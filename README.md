@@ -16,18 +16,6 @@ In the Python file, you should put the IP of your Fronius device that hosts the 
 
 If you have a CerboGX, you'd first have to enable the root user ([Venus OS:Root Access](https://www.victronenergy.com/live/ccgx:root_access#root_access)) and have a working SSH connection.
 
-### Backup previous config (optional)
-
-```bash
-  # backup config file
-  mv /data/etc/dbus-fronius-smartmeter/config.ini /data/etc/dbus-mqtt-grid_config_backup.ini
-
-  # ... install 
-
-  # restore config file
-  mv /data/etc/dbus-mqtt-grid_config.ini /data/etc/dbus-mqtt-grid/config.ini
-```
-
 ### Install script
 
 1. Login to your venusOS device as root
@@ -42,17 +30,14 @@ If you have a CerboGX, you'd first have to enable the root user ([Venus OS:Root 
     # unzip folder
     unzip dbus-fronius-smartmeter.zip
 
-    # If updating: cleanup existing driver
-    rm -rf /data/etc/dbus-mqtt-grid
-
     # move files
-    mv -f /tmp/venus.dbus-fronius-smartmeter/dbus-fronius-smartmeter /data/etc/
+    mv -f /tmp/venus.dbus-fronius-smartmeter-main/dbus-fronius-smartmeter /data/etc/
 
     # copy default config file
     cp /data/etc/dbus-fronius-smartmeter/config.sample.ini /data/etc/dbus-fronius-smartmeter/config.ini
 
     # edit the config file with vi or nano
-    #vi /data/etc/dbus-fronius-smartmeter/config.ini
+    vi /data/etc/dbus-fronius-smartmeter/config.ini
     #nano /data/etc/dbus-fronius-smartmeter/config.ini
     ```
 
@@ -60,6 +45,24 @@ If you have a CerboGX, you'd first have to enable the root user ([Venus OS:Root 
     ```bash
     bash /data/etc/dbus-fronius-smartmeter/install.sh
     ```
+
+### updating (optional)
+
+```bash
+  # backup config file
+  mv /data/etc/dbus-fronius-smartmeter/config.ini /data/etc/dbus-fronius-smartmeter_config_backup.ini
+
+  # remove old files
+  rm -rf /tmp/venus.dbus-fronius-smartmeter-main
+
+  # If updating: cleanup existing service
+  rm -rf /data/etc/dbus-fronius-smartmeter
+
+  # ... install 
+
+  # restore config file
+  mv /data/etc/dbus-fronius-smartmeter_config.ini /data/etc/dbus-fronius-smartmeter/config.ini
+```
 
 ### uninstall
 

@@ -14,6 +14,8 @@ import platform
 import logging
 import sys
 import os
+from time import sleep, time
+import configparser  # for config/ini file
 import requests # for http GET
 try:
   import thread   # for daemon = True  / Python 2.x
@@ -38,7 +40,7 @@ try:
             )
         else:
             print(
-                'ERROR:The "config.ini" is using invalid default values like IP_ADDR_OR_FQDN. The driver restarts in 60 seconds.'
+                'ERROR:The "config.ini" is missing an inverter IP. The driver restarts in 60 seconds.'
             )
             sleep(60)
             sys.exit()
@@ -147,7 +149,6 @@ class DbusFroniusSmartMeterService:
       self._dbusservice.add_path(
         path, settings['initial'], writeable=True, onchangecallback=self._handlechangedvalue)
 
-    self._dbusservice.register()
     gobject.timeout_add(pollingfrequency, self._update) # pause 200ms before the next request
 
   def _update(self):
@@ -220,7 +221,7 @@ def main():
     },
     productname=device_type,
     customname=device_name,
-    inverterip=inverter_ip
+    inverterip=inverter_ip,
     pollingfrequency=polling_frequency
   )
 
