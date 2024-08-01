@@ -7,14 +7,15 @@ Used https://github.com/victronenergy/velib_python/blob/master/DbusFroniusSmartM
 as basis for this service.
 Reading information from the Fronius Smart Meter via http REST API and puts the info on dbus.
 """
-import sys
+import _thread as thread
+import configparser  # for config/ini file
+import logging
 import os
 import platform
-import logging
+import sys
 from time import sleep
-import configparser  # for config/ini file
+
 import requests  # for http GET
-import _thread as thread
 from gi.repository import GLib
 
 # our own packages
@@ -30,7 +31,7 @@ try:
         # check inverter ip
         if "DEFAULT" in config and "inverter_ip" in config["DEFAULT"]:
             inverter_ip = config["DEFAULT"]["inverter_ip"]
-            logging.debug('using inverter_ip %s' % config["DEFAULT"]["inverter_ip"])
+            logging.debug('using inverter_ip {}',  config["DEFAULT"]["inverter_ip"])
         else:
             print(
                 'ERROR:The "config.ini" is missing an inverter IP. The driver restarts in 60 seconds.'
@@ -80,28 +81,28 @@ if "DEFAULT" in config and "device_type" in config["DEFAULT"]:
     device_type = str(config["DEFAULT"]["device_type"])
 else:
     device_type = "Fronius TS65A-3"
-    logging.debug('using default device_type %s' % device_type)
+    logging.debug('using default device_type {}',  device_type)
 
 # check custom name
 if "DEFAULT" in config and "device_name" in config["DEFAULT"]:
     device_name = str(config["DEFAULT"]["device_name"])
 else:
     device_name = "Fronius Smart Meter"
-    logging.debug('using default device_name %s' % device_name)
+    logging.debug('using default device_name {}',  device_name)
 
 # get polling_frequency
 if "DEFAULT" in config and "polling_frequency" in config["DEFAULT"]:
     polling_frequency = int(config["DEFAULT"]["polling_frequency"])
 else:
     polling_frequency = 200
-    logging.debug('using default polling_frequency %s' % polling_frequency)
+    logging.debug('using default polling_frequency {}',  polling_frequency)
 
 # get instance id
 if "DEFAULT" in config and "device_instance" in config["DEFAULT"]:
     device_instance = int(config["DEFAULT"]["device_instance"])
 else:
     device_instance = 33
-    logging.debug('using default device_instance %s' % device_instance)
+    logging.debug('using default device_instance {}',  device_instance)
 
 path_UpdateIndex = '/UpdateIndex'
 
@@ -121,7 +122,7 @@ class DbusFroniusSmartMeterService(object):
         self._paths = paths
         self._inverterip = inverterip
 
-        logging.debug("%s /DeviceInstance = %d" % (servicename, deviceinstance))
+        logging.debug("{} /DeviceInstance = {}", (servicename, deviceinstance))
 
         # Create the management objects, as specified in the ccgx dbus-api document
         self._dbusservice.add_path('/Mgmt/ProcessName', __file__)
@@ -186,7 +187,7 @@ class DbusFroniusSmartMeterService(object):
         return True
 
     def _handlechangedvalue(self, path, value):
-        logging.debug("someone else updated %s to %s" % (path, value))
+        logging.debug("someone else updated {} to {}", (path, value))
         return True  # accept the change
 
 
