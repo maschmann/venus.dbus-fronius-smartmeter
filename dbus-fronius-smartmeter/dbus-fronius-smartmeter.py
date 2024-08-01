@@ -7,15 +7,15 @@ Used https://github.com/victronenergy/velib_python/blob/master/DbusFroniusSmartM
 as basis for this service.
 Reading information from the Fronius Smart Meter via http REST API and puts the info on dbus.
 """
-from gi.repository import GLib
-import platform
-import logging
 import sys
 import os
+import platform
+import logging
 from time import sleep
 import configparser  # for config/ini file
 import requests  # for http GET
 import _thread as thread
+from gi.repository import GLib
 
 # our own packages
 sys.path.insert(1, os.path.join(os.path.dirname(__file__), "ext", "velib_python"))
