@@ -1,7 +1,7 @@
 [MASTER]
 ignore = ,input
 persistent = yes
-load-plugins = edx_lint.pylint
+#load-plugins = edx_lint.pylint
 
 [MESSAGES CONTROL]
 enable =

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 
 import dbus.service
