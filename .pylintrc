@@ -209,7 +209,7 @@ disable =
 	use-maxsplit-arg,
 	logging-fstring-interpolation,
 	logging-format-interpolation,
-	C0111,C0114,C0115,C0116б,W1203,
+	C0111,C0114,C0115,W1203,
     missing-module-docstring,
     missing-class-docstring,
     missing-function-docstring,

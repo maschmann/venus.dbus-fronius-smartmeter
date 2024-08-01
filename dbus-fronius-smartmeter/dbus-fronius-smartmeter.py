@@ -122,7 +122,7 @@ class DbusFroniusSmartMeterService(object):
         self._paths = paths
         self._inverterip = inverterip
 
-        logging.debug("{} /DeviceInstance = {}", (servicename, deviceinstance))
+        logging.debug("{} /DeviceInstance = {}", servicename, deviceinstance)
 
         # Create the management objects, as specified in the ccgx dbus-api document
         self._dbusservice.add_path('/Mgmt/ProcessName', __file__)
@@ -187,7 +187,7 @@ class DbusFroniusSmartMeterService(object):
         return True
 
     def _handlechangedvalue(self, path, value):
-        logging.debug("someone else updated {} to {}", (path, value))
+        logging.debug("someone else updated {} to {}", path, value)
         return True  # accept the change
 
 
