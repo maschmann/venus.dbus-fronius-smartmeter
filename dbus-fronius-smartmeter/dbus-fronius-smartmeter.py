@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Created by Ralf Zimmermann (mail@ralfzimmermann.de) in 2020.
@@ -7,27 +7,19 @@ Used https://github.com/victronenergy/velib_python/blob/master/DbusFroniusSmartM
 as basis for this service.
 Reading information from the Fronius Smart Meter via http REST API and puts the info on dbus.
 """
-try:
-    import gobject  # Python 2.x
-except:
-    from gi.repository import GLib as gobject  # Python 3.x
+from gi.repository import GLib
 import platform
 import logging
 import sys
 import os
-from time import sleep, time
+from time import sleep
 import configparser  # for config/ini file
 import requests  # for http GET
+import _thread as thread
+
 # our own packages
 sys.path.insert(1, os.path.join(os.path.dirname(__file__), "ext", "velib_python"))
 from vedbus import VeDbusService
-
-try:
-    import thread  # for daemon = True  / Python 2.x
-except:
-    import _thread as thread  # for daemon = True  / Python 3.x
-
-
 
 # get values from config.ini file
 try:
@@ -38,9 +30,7 @@ try:
         # check inverter ip
         if "DEFAULT" in config and "inverter_ip" in config["DEFAULT"]:
             inverter_ip = config["DEFAULT"]["inverter_ip"]
-            logging.debug(
-                'using inverter_ip ' + config["DEFAULT"]["inverter_ip"]
-            )
+            logging.debug('using inverter_ip %s' % config["DEFAULT"]["inverter_ip"])
         else:
             print(
                 'ERROR:The "config.ini" is missing an inverter IP. The driver restarts in 60 seconds.'
@@ -90,43 +80,44 @@ if "DEFAULT" in config and "device_type" in config["DEFAULT"]:
     device_type = str(config["DEFAULT"]["device_type"])
 else:
     device_type = "Fronius TS65A-3"
-    logging.debug(
-        'using default device_type' + device_type
-    )
+    logging.debug('using default device_type %s' % device_type)
 
 # check custom name
 if "DEFAULT" in config and "device_name" in config["DEFAULT"]:
     device_name = str(config["DEFAULT"]["device_name"])
 else:
     device_name = "Fronius Smart Meter"
-    logging.debug(
-        'using default device_name' + device_name
-    )
+    logging.debug('using default device_name %s' % device_name)
 
 # get polling_frequency
 if "DEFAULT" in config and "polling_frequency" in config["DEFAULT"]:
     polling_frequency = int(config["DEFAULT"]["polling_frequency"])
 else:
     polling_frequency = 200
-    logging.debug(
-        'using default polling_frequency ' + str(polling_frequency)
-    )
+    logging.debug('using default polling_frequency %s' % polling_frequency)
 
 # get instance id
 if "DEFAULT" in config and "device_instance" in config["DEFAULT"]:
     device_instance = int(config["DEFAULT"]["device_instance"])
 else:
     device_instance = 33
-    logging.debug(
-        'using default device_instance ' + str(device_instance)
-    )
+    logging.debug('using default device_instance %s' % device_instance)
 
 path_UpdateIndex = '/UpdateIndex'
 
 
-class DbusFroniusSmartMeterService:
-    def __init__(self, servicename, deviceinstance, paths, productname, customname, inverterip, pollingfrequency):
-        self._dbusservice = VeDbusService(servicename)
+class DbusFroniusSmartMeterService(object):
+    def __init__(
+        self,
+        servicename,
+        deviceinstance,
+        paths,
+        productname,
+        customname,
+        inverterip,
+        pollingfrequency
+    ):
+        self._dbusservice = VeDbusService(servicename, register=False)
         self._paths = paths
         self._inverterip = inverterip
 
@@ -151,7 +142,8 @@ class DbusFroniusSmartMeterService:
             self._dbusservice.add_path(
                 path, settings['initial'], writeable=True, onchangecallback=self._handlechangedvalue)
 
-        gobject.timeout_add(pollingfrequency, self._update)  # pause 200ms before the next request
+        self._dbusservice.register()
+        GLib.timeout_add(pollingfrequency, self._update)  # pause 200ms before the next request
 
     def _update(self):
         try:
@@ -230,8 +222,8 @@ def main():
         pollingfrequency=polling_frequency
     )
 
-    logging.info('Connected to dbus, and switching over to gobject.MainLoop() (= event based)')
-    mainloop = gobject.MainLoop()
+    logging.info('Connected to dbus, and switching over to GLib.MainLoop() (= event based)')
+    mainloop = GLib.MainLoop()
     mainloop.run()
 
 
