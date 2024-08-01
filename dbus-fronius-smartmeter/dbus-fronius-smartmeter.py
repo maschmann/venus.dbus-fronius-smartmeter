@@ -180,7 +180,7 @@ class DbusFroniusSmartMeterService:
       self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['Body']['Data']['EnergyReal_WAC_Sum_Produced'])/1000
       logging.info("House Consumption: {:.0f}".format(meter_consumption))
     except:
-      logging.info("WARNING: Could not read from Fronius PV inverter")
+      logging.warning("WARNING: Could not read from Fronius PV inverter")
       self._dbusservice['/Ac/Power'] = 0  # TODO: any better idea to signal an issue?
     # increment UpdateIndex - to show that new data is available
     index = self._dbusservice[path_UpdateIndex] + 1  # increment index
