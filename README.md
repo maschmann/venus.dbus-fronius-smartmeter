@@ -1,5 +1,9 @@
 # dbus-fronius-smartmeter Service
 
+> This is a fork of [Ralf Zimmermanns](https://github.com/RalfZim/venus.dbus-fronius-smartmeter) repository and reflects my personal needs for integrating a Fronius smartmeter 
+> into my home installation. I am not responsible for any problems you have with this implementation, nor am I 
+> responsible for any damage to your devices - use with caution!
+
 ## Purpose
 
 This service is meant to be run on a raspberry Pi with Venus OS from Victron.
@@ -10,7 +14,7 @@ The Python script cyclically reads data from the Fronius SmartMeter via the Fron
 
 Copy/rename the `config.sample.ini` file to `config.ini` in the `dbus-fronius-smartmeter` directory.
 
-In the Python file, you should put the IP of your Fronius device that hosts the REST API. In my setup, it is the IP of the Fronius Symo, which gets the data from the Fronius Smart Metervia the RS485 connection between them.
+In the ini file, you should put the IP of your Fronius device that hosts the REST API. In my setup, it is the IP of the Fronius Symo, which gets the data from the Fronius Smart Meter via the RS485 (modbus) connection between them.
 
 ## Installation
 
@@ -25,13 +29,13 @@ If you have a CerboGX, you'd first have to enable the root user ([Venus OS:Root 
     cd /tmp
 
     # download service files
-    wget -O /tmp/dbus-fronius-smartmeter.zip https://github.com/RalfZim/venus.dbus-fronius-smartmeter/archive/refs/heads/master.zip
+    wget -O /tmp/dbus-fronius-smartmeter.zip https://github.com/maschmann/venus.dbus-fronius-smartmeter/archive/refs/tags/latest.zip
 
     # unzip folder
     unzip dbus-fronius-smartmeter.zip
 
     # move files
-    mv -f /tmp/venus.dbus-fronius-smartmeter-main/dbus-fronius-smartmeter /data/etc/
+    cp -R /tmp/venus.dbus-fronius-smartmeter-latest/dbus-fronius-smartmeter /data/etc/
 
     # copy default config file
     cp /data/etc/dbus-fronius-smartmeter/config.sample.ini /data/etc/dbus-fronius-smartmeter/config.ini
